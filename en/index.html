@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sergio Varona · Backend Developer</title>
+<meta name="description" content="Portfolio of Sergio Varona Madrid, Java/Spring Back-End Developer, and his self-hosted Raspberry Pi homelab.">
+<meta name="author" content="Sergio Varona Madrid">
+<link rel="canonical" href="https://svaronam.github.io/portfolio/en/">
+<link rel="alternate" hreflang="en" href="https://svaronam.github.io/portfolio/en/">
+<link rel="alternate" hreflang="es" href="https://svaronam.github.io/portfolio/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sergio Varona · Backend Developer">
+<meta property="og:description" content="Portfolio of Sergio Varona Madrid, Java/Spring Back-End Developer, and his self-hosted Raspberry Pi homelab.">
+<meta property="og:url" content="https://svaronam.github.io/portfolio/en/">
+<meta property="og:image" content="https://svaronam.github.io/portfolio/img/pimonitor-inicio.webp">
+<meta name="theme-color" content="#0F1218">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1218'/%3E%3Cpath d='M8 11l6 5-6 5' stroke='%23F2557F' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M16 22h8' stroke='%23E7EAF0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+html, body { margin: 0 }
+img { max-width: 100% }
+[hidden] { display: none !important }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px) }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: una sesión de terminal en el homelab. Cada sección es un comando y su salida; los proyectos se leen como servicios de systemd. */
+:root {
+  --bg: #0F1218;
+  --bg-2: #131820;
+  --surface: #171D26;
+  --line: #262E3A;
+  --line-2: #343E4D;
+  --fg: #E7EAF0;
+  --fg-2: #B9C1CE;
+  --mut: #8B95A6;
+  --accent: #F2557F;
+  --accent-soft: rgba(242, 85, 127, .14);
+  --ok: #4CC38A;
+  --ok-soft: rgba(76, 195, 138, .14);
+  --warn: #E9B04F;
+  --shadow: 0 18px 40px -24px rgba(0, 0, 0, .7);
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --w: 1120px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F3F5F8; --bg-2: #EBEEF3; --surface: #FFFFFF; --line: #DBE0E7; --line-2: #C6CDD8;
+    --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09);
+    --ok: #18804F; --ok-soft: rgba(24, 128, 79, .1); --warn: #9A6400; --shadow: 0 18px 40px -28px rgba(20, 30, 50, .35);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F3F5F8; --bg-2: #EBEEF3; --surface: #FFFFFF; --line: #DBE0E7; --line-2: #C6CDD8;
+  --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09);
+  --ok: #18804F; --ok-soft: rgba(24, 128, 79, .1); --warn: #9A6400; --shadow: 0 18px 40px -28px rgba(20, 30, 50, .35);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 72px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } * { transition: none !important; animation: none !important } }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 16px/1.6 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg) }
+a { color: inherit }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px }
+h1, h2, h3 { text-wrap: balance; margin: 0 }
+p { margin: 0 }
+.wrap { max-width: var(--w); margin: 0 auto }
+.mono { font-family: var(--mono) }
+
+/* ---------- barra superior */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0 calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(10px); -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 56px; flex-wrap: wrap; padding-block: 8px }
+.prompt { font: 500 14px var(--mono); color: var(--fg); text-decoration: none; white-space: nowrap }
+.prompt b { color: var(--accent); font-weight: 600 }
+.prompt i { color: var(--ok); font-style: normal }
+.nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap }
+.nav a { font: 13px var(--mono); color: var(--mut); text-decoration: none; padding: 6px 10px; border-radius: 6px }
+.nav a:hover { color: var(--fg); background: var(--surface) }
+
+/* ---------- secciones */
+section { padding-block: 72px 8px }
+.cmd { font: 500 14px var(--mono); color: var(--mut); display: flex; gap: 10px; align-items: baseline; margin-bottom: 22px; flex-wrap: wrap }
+.cmd::before { content: "$"; color: var(--accent); font-weight: 600 }
+.cmd span { color: var(--fg) }
+.sec-title { font: 600 clamp(26px, 3.2vw, 34px)/1.15 var(--sans); letter-spacing: -.01em; margin-bottom: 28px }
+
+/* ---------- hero */
+.hero { padding-block: 64px 24px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 48px; align-items: center }
+.hero h1 { font: 700 clamp(40px, 6.2vw, 72px)/1.02 var(--sans); letter-spacing: -.025em; margin-top: 6px }
+.hero h1 em { font-style: normal; color: var(--accent) }
+.role { font: 500 clamp(15px, 1.6vw, 18px) var(--mono); color: var(--fg-2); margin-top: 16px }
+.lead { font-size: 18px; color: var(--fg-2); max-width: 60ch; margin-top: 22px }
+.lead strong { color: var(--fg); font-weight: 600 }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px;
+  border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--fg);
+  font: 500 14px var(--mono); text-decoration: none; cursor: pointer;
+}
+.btn:hover { border-color: var(--fg-2) }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: #fff }
+.btn.pri:hover { filter: brightness(1.08) }
+.btn svg { flex: none }
+
+.fetch {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow);
+  font: 13.5px/1.75 var(--mono); overflow: hidden; min-width: 0;
+}
+.fetch .bar { display: flex; gap: 7px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg-2) }
+.fetch .bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--line-2) }
+.fetch .bar span { margin-left: 8px; color: var(--mut); font-size: 12px }
+.fetch .body { padding: 16px 18px 18px; overflow-x: auto }
+.fetch .line { white-space: nowrap }
+.fetch .k { color: var(--accent); display: inline-block; min-width: 10ch }
+.fetch .v { color: var(--fg) }
+.fetch .h { color: var(--fg); font-weight: 600 }
+.fetch .hr { color: var(--line-2) }
+.fetch .dots { display: flex; gap: 6px; margin-top: 10px }
+.fetch .dots i { width: 22px; height: 12px; border-radius: 2px }
+
+/* ---------- experiencia */
+.timeline { display: grid; gap: 0; border-left: 1px solid var(--line-2); margin-left: 6px }
+.job { position: relative; padding: 0 0 36px 28px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px }
+.job::before { content: ""; position: absolute; left: -6px; top: 7px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent) }
+.job.prev::before { border-color: var(--line-2) }
+.job .when { font: 13px var(--mono); color: var(--mut) }
+.job h3 { font: 600 20px/1.3 var(--sans) }
+.job h3 small { font: 500 15px var(--sans); color: var(--fg-2) }
+.job ul { margin: 6px 0 0; padding-left: 18px; color: var(--fg-2); display: grid; gap: 6px; max-width: 75ch }
+.job li::marker { color: var(--mut) }
+.job b { color: var(--fg); font-weight: 600 }
+
+.edu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 12px }
+.panel { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); display: grid; gap: 8px; align-content: start }
+.panel .lbl { font: 12px var(--mono); color: var(--mut); text-transform: uppercase; letter-spacing: .08em }
+.panel h3 { font: 600 18px/1.35 var(--sans) }
+.panel p { color: var(--fg-2); font-size: 15px }
+.panel .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 15px; color: var(--fg-2) }
+.panel .row b { color: var(--fg); font-weight: 600 }
+.panel .row .mono { font-size: 13px; color: var(--mut) }
+
+/* ---------- homelab */
+.lab { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; margin-bottom: 44px }
+.lab p { color: var(--fg-2); max-width: 58ch }
+.lab p + p { margin-top: 12px }
+.lab p strong { color: var(--fg); font-weight: 600 }
+.units { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow-x: auto }
+.units table { width: 100%; border-collapse: collapse; font: 13px/1.5 var(--mono); min-width: 520px }
+.units th { text-align: left; font-weight: 500; color: var(--mut); padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg-2) }
+.units td { padding: 9px 14px; border-bottom: 1px solid var(--line); white-space: nowrap }
+.units tr:last-child td { border-bottom: 0 }
+.units .on { color: var(--ok) }
+.units .on::before { content: "● "; }
+.units a { color: var(--fg); text-decoration: none }
+.units a:hover { color: var(--accent) }
+
+/* ---------- proyectos */
+.projects { display: grid; gap: 28px }
+.proj {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); overflow: hidden;
+}
+.proj:nth-child(even) .gal { order: 2; border-left: 1px solid var(--line); border-right: 0 }
+.proj .gal { background: var(--bg-2); border-right: 1px solid var(--line); padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0 }
+.shot {
+  display: block; width: 100%; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--line-2); background: var(--bg); padding: 0; cursor: zoom-in; position: relative;
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block }
+.shot .zoom { position: absolute; right: 10px; bottom: 10px; font: 12px var(--mono); padding: 4px 9px; border-radius: 6px; background: rgba(10, 12, 16, .78); color: #E7EAF0 }
+.thumbs { display: flex; gap: 8px; flex-wrap: wrap }
+.thumbs button {
+  width: 58px; height: 58px; border-radius: 8px; overflow: hidden; padding: 0; cursor: pointer;
+  border: 1px solid var(--line-2); background: var(--bg); opacity: .62;
+}
+.thumbs button[aria-current="true"] { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block }
+.cap { font: 12.5px var(--mono); color: var(--mut); min-height: 1.6em }
+
+.proj .info { padding: 28px 28px 26px; display: grid; gap: 16px; align-content: start; min-width: 0 }
+.unit { font: 13px var(--mono); color: var(--mut); display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+.unit .st { color: var(--ok); background: var(--ok-soft); padding: 2px 8px; border-radius: 5px }
+.unit .st.priv { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent) }
+.proj h3 { font: 600 clamp(22px, 2.4vw, 28px)/1.2 var(--sans); letter-spacing: -.01em }
+.proj .desc { color: var(--fg-2); font-size: 16px; max-width: 60ch }
+.proj ul { margin: 0; padding-left: 18px; color: var(--fg-2); display: grid; gap: 7px; font-size: 15px; max-width: 62ch }
+.proj ul b { color: var(--fg); font-weight: 600 }
+.chips { display: flex; gap: 6px; flex-wrap: wrap }
+.chip { font: 12.5px var(--mono); color: var(--fg-2); border: 1px solid var(--line-2); border-radius: 6px; padding: 3px 9px; white-space: nowrap }
+.links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px }
+.note { font: 13px var(--mono); color: var(--mut); display: inline-flex; align-items: center; min-height: 44px }
+
+/* ---------- stack */
+.stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+.stack .panel ul { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px }
+
+/* ---------- contacto */
+.contact { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: clamp(22px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center }
+.contact h2 { font: 600 clamp(26px, 3.2vw, 36px)/1.15 var(--sans); letter-spacing: -.01em }
+.contact p { color: var(--fg-2); margin-top: 12px; max-width: 46ch }
+.clist { display: grid; gap: 10px }
+.citem { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 10px 16px; background: var(--bg-2); min-width: 0 }
+.citem .k { font: 12px var(--mono); color: var(--mut); width: 72px; flex: none }
+.citem .v { font: 14px var(--mono); color: var(--fg); flex: 1; min-width: 0; overflow-wrap: anywhere; user-select: all; text-decoration: none }
+a.citem:hover { border-color: var(--line-2) }
+a.citem:hover .v { color: var(--accent) }
+.copy { font: 12px var(--mono); min-height: 36px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--line-2); background: var(--surface); color: var(--fg); cursor: pointer; flex: none }
+
+footer { padding-block: 48px 36px; color: var(--mut); font: 13px var(--mono); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+
+/* ---------- visor */
+dialog.lb { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100%; color: var(--fg) }
+dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
+.lb .in { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 10px; padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)) }
+.lb .hd { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #E7EAF0; font: 13px var(--mono) }
+.lb .stage { display: flex; align-items: center; justify-content: center; min-height: 0; overflow: auto }
+.lb .stage img { max-width: min(760px, 100%); max-height: 100%; width: auto; height: auto; border-radius: 10px; border: 1px solid #343E4D }
+.lb .ft { display: flex; justify-content: center; gap: 10px }
+.lb button { font: 13px var(--mono); min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 8px; border: 1px solid #343E4D; background: #171D26; color: #E7EAF0; cursor: pointer }
+
+@media (max-width: 860px) {
+  .hero, .lab, .contact { grid-template-columns: minmax(0, 1fr) }
+  .hero { gap: 32px; padding-top: 40px }
+  .proj { grid-template-columns: minmax(0, 1fr) }
+  .proj .gal, .proj:nth-child(even) .gal { order: 0; border: 0; border-bottom: 1px solid var(--line) }
+  .shot { aspect-ratio: 5 / 4 }
+  .stack, .edu { grid-template-columns: minmax(0, 1fr) }
+  .proj .info { padding: 22px 20px }
+  .nav { display: none }
+}
+
+.lang { display: flex; gap: 2px; border: 1px solid var(--line-2); border-radius: 7px; padding: 2px; margin-left: 4px }
+.lang a { font: 12px var(--mono); padding: 4px 8px; border-radius: 5px; color: var(--mut); text-decoration: none }
+.lang a[aria-current="page"] { background: var(--surface); color: var(--fg) }
+@media (max-width: 860px) { .lang { margin-left: auto } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="prompt" href="#top"><b>sergio</b>@<i>homelab</i>:~$</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#experience">experience</a>
+      <a href="#homelab">homelab</a>
+      <a href="#projects">projects</a>
+      <a href="#stack">stack</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <div class="lang" aria-label="Idioma / Language"><a href="../" hreflang="es">ES</a><a href="./" hreflang="en" aria-current="page">EN</a></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===================== HERO -->
+  <div class="hero" id="top">
+    <div>
+      <div class="cmd">whoami</div>
+      <h1>Sergio Varona<br><em>Madrid</em></h1>
+      <p class="role">Software Engineer · Back-End Developer</p>
+      <p class="lead">Computer engineer with <strong>5+ years</strong> building backend systems in <strong>Java and Spring</strong> for <strong>Iberdrola</strong>'s sales module at Accenture. At home I run a <strong>two-Raspberry-Pi homelab</strong> with my own Python services, each with its own Android app.</p>
+      <div class="cta">
+        <a class="btn pri" href="#projects">See projects</a>
+        <a class="btn" href="https://github.com/svaronam" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          GitHub
+        </a>
+        <a class="btn" href="https://linkedin.com/in/sergio-varona-madrid" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.83v1.5h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13v5.43h-4v-4.82c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.9h-4v-11Z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <div class="fetch" aria-label="Summary in terminal format">
+      <div class="bar"><i></i><i></i><i></i><span>neofetch</span></div>
+      <div class="body">
+        <div class="line"><span class="h">sergio</span>@<span class="h">homelab</span></div>
+        <div class="line hr">----------------------------</div>
+        <div class="line"><span class="k">Role</span><span class="v">Back-End Developer</span></div>
+        <div class="line"><span class="k">Company</span><span class="v">Accenture · Bilbao</span></div>
+        <div class="line"><span class="k">Client</span><span class="v">Iberdrola, sales module</span></div>
+        <div class="line"><span class="k">Stack</span><span class="v">Java · Spring Boot · SQL</span></div>
+        <div class="line"><span class="k">Exp.</span><span class="v">5+ years</span></div>
+        <div class="line"><span class="k">Education</span><span class="v">BSc Comp. Eng. · UC</span></div>
+        <div class="line"><span class="k">Homelab</span><span class="v">2 × Raspberry Pi 3 B+</span></div>
+        <div class="line"><span class="k">Services</span><span class="v">7 always-on</span></div>
+        <div class="line"><span class="k">Network</span><span class="v">Tailscale (VPN)</span></div>
+        <div class="line"><span class="k">Languages</span><span class="v">Spanish · English B2</span></div>
+        <div class="dots" aria-hidden="true">
+          <i style="background:#F2557F"></i><i style="background:#E9B04F"></i><i style="background:#4CC38A"></i><i style="background:#5AA9F0"></i><i style="background:#A98BF0"></i><i style="background:#8B95A6"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== EXPERIENCIA -->
+  <section id="experience">
+    <div class="cmd">cat <span>experience.log</span></div>
+    <h2 class="sec-title">Experience</h2>
+    <div class="timeline">
+      <article class="job">
+        <span class="when">Dec 2023 — present · Bilbao, Spain</span>
+        <h3>Back-End Developer <small>· Accenture</small></h3>
+        <ul>
+          <li>Developed <b>microservices and REST APIs</b> for Iberdrola's sales model with <b>Spring Boot</b>, Spring Web, <b>Hibernate and JPA</b> on SQL databases.</li>
+          <li>Built <b>Batch</b> processes with Spring Boot and <b>Spring Batch</b> to handle large volumes of data.</li>
+          <li>Wrote unit tests with <b>JUnit and Mockito</b>, and kept code quality with Git, Sonar and Jenkins.</li>
+          <li>Worked in a <b>Scrum</b> team with 4-week sprints.</li>
+        </ul>
+      </article>
+      <article class="job prev">
+        <span class="when">Feb 2022 — Dec 2023 · Bilbao, Spain</span>
+        <h3>Associate Back-End Developer <small>· Accenture</small></h3>
+        <ul>
+          <li>Designed the infrastructure for Batch processes with <b>Spring Batch</b> in the sales module, replacing <b>Cobol with Java</b> and achieving a <b>significant cost reduction</b> for the client.</li>
+          <li>Developed and maintained features with Java, Spring and Spring Batch.</li>
+        </ul>
+      </article>
+      <article class="job prev">
+        <span class="when">Jan 2021 — Feb 2022 · Remote</span>
+        <h3>Intern <small>· Customerworks Europe</small></h3>
+        <ul>
+          <li>Maintained Iberdrola's sales model database, ensuring data integrity, and developed features in <b>Java</b>.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="edu">
+      <div class="panel">
+        <span class="lbl">Education</span>
+        <h3>BSc in Computer Engineering</h3>
+        <div class="row"><span>University of Cantabria · Software Engineering track</span><span class="mono">2017 — 2021</span></div>
+        <p>Final project: a web app with <b style="color:var(--fg);font-weight:600">React and Spring Boot</b> to streamline hiring between IT profiles and companies (grade 8.2/10).</p>
+      </div>
+      <div class="panel">
+        <span class="lbl">Certifications</span>
+        <div class="row"><b>AWS Certified Cloud Practitioner</b><span class="mono">Feb 2022</span></div>
+        <div class="row"><span>Amazon Web Services</span></div>
+        <div class="row" style="margin-top:6px"><b>AWS Cloud Technical Essentials</b><span class="mono">Mar 2022</span></div>
+        <div class="row"><span>Coursera</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOMELAB -->
+  <section id="homelab">
+    <div class="cmd">systemctl list-units <span>--type=service</span></div>
+    <h2 class="sec-title">The homelab</h2>
+    <div class="lab">
+      <div>
+        <p>Two <strong>Raspberry Pi 3 B+</strong> in a rack with a gigabit switch, running Raspberry Pi OS Lite. Each service is a <strong>systemd</strong> unit written in Python, with its own web panel and a <strong>native Android app</strong> that receives alerts.</p>
+        <p>Nothing is exposed to the internet: all access goes through a <strong>Tailscale VPN</strong> with token authentication. The APKs are built by <strong>GitHub Actions</strong> on every push, and Pi Monitor keeps an eye on everything.</p>
+      </div>
+      <div class="units" role="region" aria-label="Homelab services" tabindex="0">
+        <table>
+          <thead><tr><th>UNIT</th><th>HOST</th><th>STATE</th><th>WHAT IT DOES</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#p-pimonitor">pi-agent.service</a></td><td>both</td><td class="on">running</td><td>monitoring and control</td></tr>
+            <tr><td><a href="#p-wallabot">wallabot.service</a></td><td>homelab1</td><td class="on">running</td><td>Wallapop alerts and market data</td></tr>
+            <tr><td><a href="#p-wallapop">wallapop.service</a></td><td>homelab1</td><td class="on">running</td><td>managing my own listings</td></tr>
+            <tr><td><a href="#p-opotest">opotest.service</a></td><td>homelab2</td><td class="on">running</td><td>quizzes with spaced repetition and AI</td></tr>
+            <tr><td><a href="#p-oporadar">oporadar.service</a></td><td>homelab2</td><td class="on">running</td><td>official gazette radar</td></tr>
+            <tr><td><a href="#p-diecast">diecast-radar.service</a></td><td>homelab2</td><td class="on">running</td><td>collectible release alerts</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROYECTOS -->
+  <section id="projects" style="padding-top:24px">
+    <div class="cmd">systemctl status <span>homelab-*</span></div>
+    <h2 class="sec-title">Projects</h2>
+
+    <div class="projects">
+
+      <article class="proj" id="p-pimonitor">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/pimonitor-inicio.webp" alt="Pi Monitor home screen with both Raspberry Pis and their services" loading="lazy"><span class="zoom">enlarge</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="../img/pimonitor-inicio.webp" data-cap="Home: both Pis and their services" aria-label="Home"><img src="../img/pimonitor-inicio.webp" alt=""></button>
+            <button type="button" data-src="../img/pimonitor-pi.webp" data-cap="Pi detail: 24 h charts and SD card usage" aria-label="Pi detail"><img src="../img/pimonitor-pi.webp" alt=""></button>
+            <button type="button" data-src="../img/pimonitor-bot.webp" data-cap="Service detail: control, schedule and watchdog" aria-label="Service detail"><img src="../img/pimonitor-bot.webp" alt=""></button>
+          </div>
+          <p class="cap">Home: both Pis and their services</p>
+        </div>
+        <div class="info">
+          <div class="unit">● pi-monitor.service <span class="st">active (running)</span></div>
+          <h3>Pi Monitor</h3>
+          <p class="desc">Monitoring and control of the Raspberry Pis from my phone. A lightweight agent on each Pi exposes its state and its services, and an Android app brings it all together and alerts me when something fails.</p>
+          <ul>
+            <li><b>CPU, temperature, RAM, SD and voltage</b> metrics, with 24-hour and 7-day charts.</li>
+            <li>Detects <b>failed or hung</b> services and restarts them automatically, with a daily retry limit.</li>
+            <li>Tells “the Pi is down” apart from “the phone has no VPN” to <b>avoid false alarms</b>.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python stdlib</span><span class="chip">systemd</span><span class="chip">Kotlin</span><span class="chip">Tailscale</span><span class="chip">GitHub Actions</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/pi-monitor" target="_blank" rel="noopener">View repository →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-wallabot">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/wallabot-analisis.webp" alt="Wallabot market analysis with sales, time to sell and insights" loading="lazy"><span class="zoom">enlarge</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="../img/wallabot-analisis.webp" data-cap="Market analysis with automatic insights" aria-label="Market analysis"><img src="../img/wallabot-analisis.webp" alt=""></button>
+            <button type="button" data-src="../img/wallabot-avisos.webp" data-cap="Deals against the search median price" aria-label="Deals"><img src="../img/wallabot-avisos.webp" alt=""></button>
+            <button type="button" data-src="../img/wallabot-busquedas.webp" data-cap="Searches with alerts" aria-label="Searches"><img src="../img/wallabot-busquedas.webp" alt=""></button>
+          </div>
+          <p class="cap">Market analysis with automatic insights</p>
+        </div>
+        <div class="info">
+          <div class="unit">● wallabot.service <span class="st">active (running)</span></div>
+          <h3>Wallabot</h3>
+          <p class="desc">A 24/7 tracker for Wallapop, Spain's second-hand marketplace, with real-time alerts and market analysis. It follows searches, spots deals, price drops and sales, and notifies its own Android app with no third-party services.</p>
+          <ul>
+            <li><b>Deals</b> computed against each search's median price, with seller-urgency and risk signals.</li>
+            <li>Stores every listing and re-checks it to measure <b>what sells, how fast and at what real price</b>.</li>
+            <li>Real-time events over <b>long-polling</b> and separate Android notification channels.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python asyncio</span><span class="chip">Starlette</span><span class="chip">httpx</span><span class="chip">SQLite</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/wallabot" target="_blank" rel="noopener">View repository →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-opotest">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/opotest-pregunta.webp" alt="Graded OpoTest question with explanation and sources" loading="lazy"><span class="zoom">enlarge</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="../img/opotest-pregunta.webp" data-cap="Graded question with explanation and sources" aria-label="Graded question"><img src="../img/opotest-pregunta.webp" alt=""></button>
+            <button type="button" data-src="../img/opotest-hoy.webp" data-cap="Daily goal and shortcuts" aria-label="Today"><img src="../img/opotest-hoy.webp" alt=""></button>
+            <button type="button" data-src="../img/opotest-test.webp" data-cap="New quiz and AI generation" aria-label="New quiz"><img src="../img/opotest-test.webp" alt=""></button>
+            <button type="button" data-src="../img/opotest-repaso.webp" data-cap="Spaced review of missed questions" aria-label="Review"><img src="../img/opotest-repaso.webp" alt=""></button>
+          </div>
+          <p class="cap">Graded question with explanation and sources</p>
+        </div>
+        <div class="info">
+          <div class="unit">● opotest.service <span class="st">active (running)</span></div>
+          <h3>OpoTest TIC</h3>
+          <p class="desc">A continuous-learning quiz platform for Spain's public-sector IT civil service exams (A1, A2 and C1). It combines a question bank, the indexed syllabus and AI-generated questions.</p>
+          <ul>
+            <li><b>Spaced repetition</b>: every missed question comes back after 1, 3, 7, 15 and 30 days.</li>
+            <li>New questions with <b>Gemini</b>, focused on the weakest topics. A second model solves them blind and <b>discards ambiguous ones</b>.</li>
+            <li>Searchable, indexed PDF syllabus, with <b>OCR</b> for scanned documents.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Starlette</span><span class="chip">SQLite</span><span class="chip">Gemini API</span><span class="chip">Tesseract</span><span class="chip">Android</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/opotest" target="_blank" rel="noopener">View repository →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-oporadar">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/oporadar-radar.webp" alt="OpoRadar with scored IT job openings" loading="lazy"><span class="zoom">enlarge</span></button>
+          <p class="cap">IT job openings scored from 0 to 100</p>
+        </div>
+        <div class="info">
+          <div class="unit">● oporadar.service <span class="st">active (running)</span></div>
+          <h3>OpoRadar</h3>
+          <p class="desc">A daily radar for public-sector IT job openings. Every morning it reads Spain's official state gazette (BOE) and several regional gazettes, keeps only IT positions, scores them by interest and alerts its own Android app.</p>
+          <ul>
+            <li>Reads <b>5 gazettes</b>: BOE (official API), BOC, BOPA, BOCYL and BOPV.</li>
+            <li>Classifies group, selection process and notice type, and <b>scores from 0 to 100</b>, explaining where each point comes from.</li>
+            <li><b>Self-monitoring</b>: if a gazette changes its website or stops returning results, it raises a health alert.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python stdlib</span><span class="chip">SQLite</span><span class="chip">XML</span><span class="chip">unittest</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/oporadar" target="_blank" rel="noopener">View repository →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-diecast">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/diecast-tiendas.webp" alt="Diecast Radar with announced and in-stock models from official sites" loading="lazy"><span class="zoom">enlarge</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="../img/diecast-tiendas.webp" data-cap="Official manufacturer sites" aria-label="Official sites"><img src="../img/diecast-tiendas.webp" alt=""></button>
+            <button type="button" data-src="../img/diecast-overnight.webp" data-cap="Catalog of a Spanish store" aria-label="Spanish store"><img src="../img/diecast-overnight.webp" alt=""></button>
+            <button type="button" data-src="../img/diecast-hotwheels.webp" data-cap="Detected preorders" aria-label="Preorders"><img src="../img/diecast-hotwheels.webp" alt=""></button>
+          </div>
+          <p class="cap">Official manufacturer sites</p>
+        </div>
+        <div class="info">
+          <div class="unit">● diecast-radar.service <span class="st">active (running)</span></div>
+          <h3>Diecast Radar</h3>
+          <p class="desc">Watches releases and preorders of 1:64 scale collectible cars on manufacturer sites and Spanish stores, and pings my phone within seconds.</p>
+          <ul>
+            <li>Detects each site's platform (<b>Shopify, WooCommerce, PrestaShop</b> or custom) and reads its catalog without a browser.</li>
+            <li>Alerts on <b>new models, open preorders and restocks</b>; the first pass only stores, so it never alerts on what was already there.</li>
+            <li>Reads Instagram posts and stories and classifies announcements with <b>OCR</b> on the image.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Flask</span><span class="chip">BeautifulSoup</span><span class="chip">curl_cffi</span><span class="chip">Tesseract</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/diecast-radar" target="_blank" rel="noopener">View repository →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-wallapop">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/wallapop-rutinas.webp" alt="Wallapop Control scheduled routines" loading="lazy"><span class="zoom">enlarge</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="../img/wallapop-rutinas.webp" data-cap="Routines scheduled by day and time" aria-label="Routines"><img src="../img/wallapop-rutinas.webp" alt=""></button>
+            <button type="button" data-src="../img/wallapop-posicion.webp" data-cap="Each listing's position in search results" aria-label="Position"><img src="../img/wallapop-posicion.webp" alt=""></button>
+            <button type="button" data-src="../img/wallapop-republicar.webp" data-cap="Bulk republishing" aria-label="Republish"><img src="../img/wallapop-republicar.webp" alt=""></button>
+            <button type="button" data-src="../img/wallapop-ordenar.webp" data-cap="Drag to reorder the profile" aria-label="Reorder"><img src="../img/wallapop-ordenar.webp" alt=""></button>
+            <button type="button" data-src="../img/wallapop-publicar.webp" data-cap="Publish to Wallapop and eBay at once" aria-label="Publish"><img src="../img/wallapop-publicar.webp" alt=""></button>
+          </div>
+          <p class="cap">Routines scheduled by day and time</p>
+        </div>
+        <div class="info">
+          <div class="unit">● wallapop.service <span class="st">active (running)</span><span class="st priv">private repository</span></div>
+          <h3>Wallapop Control</h3>
+          <p class="desc">Manages my own Wallapop listings from my phone. It started as a Chrome extension and grew into a server that runs on its own, without an open browser, and also publishes to eBay.</p>
+          <ul>
+            <li>Bulk republishing and <b>scheduled routines</b> with random jitter and a dry-run mode.</li>
+            <li>Measures <b>each listing's search position</b> and reorders the profile by bumping only the minimum number of listings.</li>
+            <li>Publishes to Wallapop and <b>eBay</b> at the same time (OAuth2 and Trading API).</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Flask</span><span class="chip">curl_cffi</span><span class="chip">eBay API</span><span class="chip">Kotlin</span></div>
+          <div class="links"><span class="note">Private code · available on request</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== STACK -->
+  <section id="stack">
+    <div class="cmd">cat <span>stack.txt</span></div>
+    <h2 class="sec-title">Tech stack</h2>
+    <div class="stack">
+      <div class="panel"><span class="lbl">Languages</span><ul><li class="chip">Java</li><li class="chip">Python</li><li class="chip">SQL</li><li class="chip">Kotlin</li><li class="chip">JavaScript</li></ul></div>
+      <div class="panel"><span class="lbl">Backend</span><ul><li class="chip">Spring Boot</li><li class="chip">Spring Batch</li><li class="chip">Spring Web</li><li class="chip">Hibernate / JPA</li><li class="chip">REST APIs</li><li class="chip">Microservices</li><li class="chip">Maven</li></ul></div>
+      <div class="panel"><span class="lbl">Databases</span><ul><li class="chip">Oracle</li><li class="chip">PostgreSQL</li><li class="chip">MySQL</li><li class="chip">IBM DB2</li><li class="chip">SQLite</li></ul></div>
+      <div class="panel"><span class="lbl">Testing &amp; quality</span><ul><li class="chip">JUnit</li><li class="chip">Mockito</li><li class="chip">Sonar</li><li class="chip">unittest</li></ul></div>
+      <div class="panel"><span class="lbl">DevOps &amp; cloud</span><ul><li class="chip">Git</li><li class="chip">Jenkins</li><li class="chip">GitHub Actions</li><li class="chip">Docker</li><li class="chip">Linux</li><li class="chip">systemd</li><li class="chip">AWS</li></ul></div>
+      <div class="panel"><span class="lbl">Architecture &amp; method</span><ul><li class="chip">Hexagonal</li><li class="chip">DDD</li><li class="chip">MVC</li><li class="chip">Agile / Scrum</li><li class="chip">AI-assisted development</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACTO -->
+  <section id="contact">
+    <div class="cmd">contact <span>--info</span></div>
+    <div class="contact">
+      <div>
+        <h2>Let's talk</h2>
+        <p>I'm looking to keep growing as a backend developer. If you have an opening or want to know more about any project, drop me a line.</p>
+      </div>
+      <div class="clist">
+        <div class="citem"><span class="k">email</span><span class="v" id="mail">svaronamadrid@outlook.com</span><button class="copy" type="button" id="copyMail">Copy</button></div>
+        <a class="citem" href="https://linkedin.com/in/sergio-varona-madrid" target="_blank" rel="noopener"><span class="k">linkedin</span><span class="v">in/sergio-varona-madrid</span></a>
+        <a class="citem" href="https://github.com/svaronam" target="_blank" rel="noopener"><span class="k">github</span><span class="v">github.com/svaronam</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Sergio Varona Madrid</span>
+    <span>services on Raspberry Pi · access over Tailscale</span>
+  </footer>
+</main>
+
+<dialog class="lb" id="lb" aria-label="Enlarged screenshot">
+  <div class="in">
+    <div class="hd"><span id="lbCap"></span><button type="button" id="lbClose" aria-label="Close">Close ✕</button></div>
+    <div class="stage"><img id="lbImg" alt=""></div>
+    <div class="ft"><button type="button" id="lbPrev" aria-label="Previous">← Previous</button><button type="button" id="lbNext" aria-label="Next">Next →</button></div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap');
+  let cur = null, idx = 0;
+  const items = g => {
+    const t = [...g.querySelectorAll('.thumbs button')];
+    if (t.length) return t.map(b => ({ src: b.dataset.src, cap: b.dataset.cap }));
+    const img = g.querySelector('.shot img');
+    return [{ src: img.getAttribute('src'), cap: g.querySelector('.cap')?.textContent || '' }];
+  };
+  const show = () => {
+    const list = items(cur), it = list[idx];
+    lbImg.src = it.src; lbImg.alt = it.cap; lbCap.textContent = `${it.cap} · ${idx + 1}/${list.length}`;
+    const one = list.length < 2;
+    document.getElementById('lbPrev').hidden = one; document.getElementById('lbNext').hidden = one;
+  };
+  const select = (g, i) => {
+    const t = [...g.querySelectorAll('.thumbs button')]; if (!t.length) return;
+    t.forEach((b, j) => b.setAttribute('aria-current', j === i ? 'true' : 'false'));
+    const img = g.querySelector('.shot img');
+    img.src = t[i].dataset.src; img.alt = t[i].dataset.cap;
+    g.querySelector('.cap').textContent = t[i].dataset.cap;
+    g.dataset.idx = i;
+  };
+  document.querySelectorAll('[data-gal]').forEach(g => {
+    g.dataset.idx = 0;
+    g.querySelectorAll('.thumbs button').forEach((b, i) => b.addEventListener('click', () => select(g, i)));
+    g.querySelector('.shot').addEventListener('click', () => {
+      cur = g; idx = +g.dataset.idx || 0; show();
+      try { lb.showModal() } catch { lb.setAttribute('open', '') }
+    });
+  });
+  const step = d => { const n = items(cur).length; idx = (idx + d + n) % n; show(); select(cur, idx) };
+  document.getElementById('lbPrev').addEventListener('click', () => step(-1));
+  document.getElementById('lbNext').addEventListener('click', () => step(1));
+  document.getElementById('lbClose').addEventListener('click', () => lb.close());
+  lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('stage')) lb.close() });
+  lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1) });
+
+  const btn = document.getElementById('copyMail'), mail = document.getElementById('mail');
+  btn.addEventListener('click', () => {
+    const done = () => { btn.textContent = 'Copied'; setTimeout(() => btn.textContent = 'Copy', 1600) };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(mail); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected' ; setTimeout(() => btn.textContent = 'Copy', 1600) };
+    try { navigator.clipboard.writeText(mail.textContent.trim()).then(done, fallback) } catch { fallback() }
+  });
+})();
+</script>
+
+</body>
+</html>

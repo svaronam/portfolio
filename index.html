@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sergio Varona · Backend Developer</title>
+<meta name="description" content="Portfolio de Sergio Varona Madrid, Back-End Developer Java/Spring, y su homelab de servicios autoalojados en Raspberry Pi.">
+<meta name="author" content="Sergio Varona Madrid">
+<link rel="canonical" href="https://svaronam.github.io/portfolio/">
+<link rel="alternate" hreflang="es" href="https://svaronam.github.io/portfolio/">
+<link rel="alternate" hreflang="en" href="https://svaronam.github.io/portfolio/en/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sergio Varona · Backend Developer">
+<meta property="og:description" content="Portfolio de Sergio Varona Madrid, Back-End Developer Java/Spring, y su homelab de servicios autoalojados en Raspberry Pi.">
+<meta property="og:url" content="https://svaronam.github.io/portfolio/">
+<meta property="og:image" content="https://svaronam.github.io/portfolio/img/pimonitor-inicio.webp">
+<meta name="theme-color" content="#0F1218">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1218'/%3E%3Cpath d='M8 11l6 5-6 5' stroke='%23F2557F' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M16 22h8' stroke='%23E7EAF0' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+html, body { margin: 0 }
+img { max-width: 100% }
+[hidden] { display: none !important }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px) }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: una sesión de terminal en el homelab. Cada sección es un comando y su salida; los proyectos se leen como servicios de systemd. */
+:root {
+  --bg: #0F1218;
+  --bg-2: #131820;
+  --surface: #171D26;
+  --line: #262E3A;
+  --line-2: #343E4D;
+  --fg: #E7EAF0;
+  --fg-2: #B9C1CE;
+  --mut: #8B95A6;
+  --accent: #F2557F;
+  --accent-soft: rgba(242, 85, 127, .14);
+  --ok: #4CC38A;
+  --ok-soft: rgba(76, 195, 138, .14);
+  --warn: #E9B04F;
+  --shadow: 0 18px 40px -24px rgba(0, 0, 0, .7);
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --w: 1120px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F3F5F8; --bg-2: #EBEEF3; --surface: #FFFFFF; --line: #DBE0E7; --line-2: #C6CDD8;
+    --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09);
+    --ok: #18804F; --ok-soft: rgba(24, 128, 79, .1); --warn: #9A6400; --shadow: 0 18px 40px -28px rgba(20, 30, 50, .35);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F3F5F8; --bg-2: #EBEEF3; --surface: #FFFFFF; --line: #DBE0E7; --line-2: #C6CDD8;
+  --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09);
+  --ok: #18804F; --ok-soft: rgba(24, 128, 79, .1); --warn: #9A6400; --shadow: 0 18px 40px -28px rgba(20, 30, 50, .35);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 72px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } * { transition: none !important; animation: none !important } }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 16px/1.6 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg) }
+a { color: inherit }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px }
+h1, h2, h3 { text-wrap: balance; margin: 0 }
+p { margin: 0 }
+.wrap { max-width: var(--w); margin: 0 auto }
+.mono { font-family: var(--mono) }
+
+/* ---------- barra superior */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0 calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(10px); -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 56px; flex-wrap: wrap; padding-block: 8px }
+.prompt { font: 500 14px var(--mono); color: var(--fg); text-decoration: none; white-space: nowrap }
+.prompt b { color: var(--accent); font-weight: 600 }
+.prompt i { color: var(--ok); font-style: normal }
+.nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap }
+.nav a { font: 13px var(--mono); color: var(--mut); text-decoration: none; padding: 6px 10px; border-radius: 6px }
+.nav a:hover { color: var(--fg); background: var(--surface) }
+
+/* ---------- secciones */
+section { padding-block: 72px 8px }
+.cmd { font: 500 14px var(--mono); color: var(--mut); display: flex; gap: 10px; align-items: baseline; margin-bottom: 22px; flex-wrap: wrap }
+.cmd::before { content: "$"; color: var(--accent); font-weight: 600 }
+.cmd span { color: var(--fg) }
+.sec-title { font: 600 clamp(26px, 3.2vw, 34px)/1.15 var(--sans); letter-spacing: -.01em; margin-bottom: 28px }
+
+/* ---------- hero */
+.hero { padding-block: 64px 24px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 48px; align-items: center }
+.hero h1 { font: 700 clamp(40px, 6.2vw, 72px)/1.02 var(--sans); letter-spacing: -.025em; margin-top: 6px }
+.hero h1 em { font-style: normal; color: var(--accent) }
+.role { font: 500 clamp(15px, 1.6vw, 18px) var(--mono); color: var(--fg-2); margin-top: 16px }
+.lead { font-size: 18px; color: var(--fg-2); max-width: 60ch; margin-top: 22px }
+.lead strong { color: var(--fg); font-weight: 600 }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px;
+  border-radius: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--fg);
+  font: 500 14px var(--mono); text-decoration: none; cursor: pointer;
+}
+.btn:hover { border-color: var(--fg-2) }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: #fff }
+.btn.pri:hover { filter: brightness(1.08) }
+.btn svg { flex: none }
+
+.fetch {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow);
+  font: 13.5px/1.75 var(--mono); overflow: hidden; min-width: 0;
+}
+.fetch .bar { display: flex; gap: 7px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg-2) }
+.fetch .bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--line-2) }
+.fetch .bar span { margin-left: 8px; color: var(--mut); font-size: 12px }
+.fetch .body { padding: 16px 18px 18px; overflow-x: auto }
+.fetch .line { white-space: nowrap }
+.fetch .k { color: var(--accent); display: inline-block; min-width: 10ch }
+.fetch .v { color: var(--fg) }
+.fetch .h { color: var(--fg); font-weight: 600 }
+.fetch .hr { color: var(--line-2) }
+.fetch .dots { display: flex; gap: 6px; margin-top: 10px }
+.fetch .dots i { width: 22px; height: 12px; border-radius: 2px }
+
+/* ---------- experiencia */
+.timeline { display: grid; gap: 0; border-left: 1px solid var(--line-2); margin-left: 6px }
+.job { position: relative; padding: 0 0 36px 28px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px }
+.job::before { content: ""; position: absolute; left: -6px; top: 7px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent) }
+.job.prev::before { border-color: var(--line-2) }
+.job .when { font: 13px var(--mono); color: var(--mut) }
+.job h3 { font: 600 20px/1.3 var(--sans) }
+.job h3 small { font: 500 15px var(--sans); color: var(--fg-2) }
+.job ul { margin: 6px 0 0; padding-left: 18px; color: var(--fg-2); display: grid; gap: 6px; max-width: 75ch }
+.job li::marker { color: var(--mut) }
+.job b { color: var(--fg); font-weight: 600 }
+
+.edu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 12px }
+.panel { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--surface); display: grid; gap: 8px; align-content: start }
+.panel .lbl { font: 12px var(--mono); color: var(--mut); text-transform: uppercase; letter-spacing: .08em }
+.panel h3 { font: 600 18px/1.35 var(--sans) }
+.panel p { color: var(--fg-2); font-size: 15px }
+.panel .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 15px; color: var(--fg-2) }
+.panel .row b { color: var(--fg); font-weight: 600 }
+.panel .row .mono { font-size: 13px; color: var(--mut) }
+
+/* ---------- homelab */
+.lab { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; margin-bottom: 44px }
+.lab p { color: var(--fg-2); max-width: 58ch }
+.lab p + p { margin-top: 12px }
+.lab p strong { color: var(--fg); font-weight: 600 }
+.units { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow-x: auto }
+.units table { width: 100%; border-collapse: collapse; font: 13px/1.5 var(--mono); min-width: 520px }
+.units th { text-align: left; font-weight: 500; color: var(--mut); padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg-2) }
+.units td { padding: 9px 14px; border-bottom: 1px solid var(--line); white-space: nowrap }
+.units tr:last-child td { border-bottom: 0 }
+.units .on { color: var(--ok) }
+.units .on::before { content: "● "; }
+.units a { color: var(--fg); text-decoration: none }
+.units a:hover { color: var(--accent) }
+
+/* ---------- proyectos */
+.projects { display: grid; gap: 28px }
+.proj {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); overflow: hidden;
+}
+.proj:nth-child(even) .gal { order: 2; border-left: 1px solid var(--line); border-right: 0 }
+.proj .gal { background: var(--bg-2); border-right: 1px solid var(--line); padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0 }
+.shot {
+  display: block; width: 100%; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--line-2); background: var(--bg); padding: 0; cursor: zoom-in; position: relative;
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block }
+.shot .zoom { position: absolute; right: 10px; bottom: 10px; font: 12px var(--mono); padding: 4px 9px; border-radius: 6px; background: rgba(10, 12, 16, .78); color: #E7EAF0 }
+.thumbs { display: flex; gap: 8px; flex-wrap: wrap }
+.thumbs button {
+  width: 58px; height: 58px; border-radius: 8px; overflow: hidden; padding: 0; cursor: pointer;
+  border: 1px solid var(--line-2); background: var(--bg); opacity: .62;
+}
+.thumbs button[aria-current="true"] { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block }
+.cap { font: 12.5px var(--mono); color: var(--mut); min-height: 1.6em }
+
+.proj .info { padding: 28px 28px 26px; display: grid; gap: 16px; align-content: start; min-width: 0 }
+.unit { font: 13px var(--mono); color: var(--mut); display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+.unit .st { color: var(--ok); background: var(--ok-soft); padding: 2px 8px; border-radius: 5px }
+.unit .st.priv { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent) }
+.proj h3 { font: 600 clamp(22px, 2.4vw, 28px)/1.2 var(--sans); letter-spacing: -.01em }
+.proj .desc { color: var(--fg-2); font-size: 16px; max-width: 60ch }
+.proj ul { margin: 0; padding-left: 18px; color: var(--fg-2); display: grid; gap: 7px; font-size: 15px; max-width: 62ch }
+.proj ul b { color: var(--fg); font-weight: 600 }
+.chips { display: flex; gap: 6px; flex-wrap: wrap }
+.chip { font: 12.5px var(--mono); color: var(--fg-2); border: 1px solid var(--line-2); border-radius: 6px; padding: 3px 9px; white-space: nowrap }
+.links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px }
+.note { font: 13px var(--mono); color: var(--mut); display: inline-flex; align-items: center; min-height: 44px }
+
+/* ---------- stack */
+.stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+.stack .panel ul { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px }
+
+/* ---------- contacto */
+.contact { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: clamp(22px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center }
+.contact h2 { font: 600 clamp(26px, 3.2vw, 36px)/1.15 var(--sans); letter-spacing: -.01em }
+.contact p { color: var(--fg-2); margin-top: 12px; max-width: 46ch }
+.clist { display: grid; gap: 10px }
+.citem { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 10px 16px; background: var(--bg-2); min-width: 0 }
+.citem .k { font: 12px var(--mono); color: var(--mut); width: 72px; flex: none }
+.citem .v { font: 14px var(--mono); color: var(--fg); flex: 1; min-width: 0; overflow-wrap: anywhere; user-select: all; text-decoration: none }
+a.citem:hover { border-color: var(--line-2) }
+a.citem:hover .v { color: var(--accent) }
+.copy { font: 12px var(--mono); min-height: 36px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--line-2); background: var(--surface); color: var(--fg); cursor: pointer; flex: none }
+
+footer { padding-block: 48px 36px; color: var(--mut); font: 13px var(--mono); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+
+/* ---------- visor */
+dialog.lb { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100%; color: var(--fg) }
+dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
+.lb .in { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 10px; padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)) }
+.lb .hd { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #E7EAF0; font: 13px var(--mono) }
+.lb .stage { display: flex; align-items: center; justify-content: center; min-height: 0; overflow: auto }
+.lb .stage img { max-width: min(760px, 100%); max-height: 100%; width: auto; height: auto; border-radius: 10px; border: 1px solid #343E4D }
+.lb .ft { display: flex; justify-content: center; gap: 10px }
+.lb button { font: 13px var(--mono); min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 8px; border: 1px solid #343E4D; background: #171D26; color: #E7EAF0; cursor: pointer }
+
+@media (max-width: 860px) {
+  .hero, .lab, .contact { grid-template-columns: minmax(0, 1fr) }
+  .hero { gap: 32px; padding-top: 40px }
+  .proj { grid-template-columns: minmax(0, 1fr) }
+  .proj .gal, .proj:nth-child(even) .gal { order: 0; border: 0; border-bottom: 1px solid var(--line) }
+  .shot { aspect-ratio: 5 / 4 }
+  .stack, .edu { grid-template-columns: minmax(0, 1fr) }
+  .proj .info { padding: 22px 20px }
+  .nav { display: none }
+}
+
+.lang { display: flex; gap: 2px; border: 1px solid var(--line-2); border-radius: 7px; padding: 2px; margin-left: 4px }
+.lang a { font: 12px var(--mono); padding: 4px 8px; border-radius: 5px; color: var(--mut); text-decoration: none }
+.lang a[aria-current="page"] { background: var(--surface); color: var(--fg) }
+@media (max-width: 860px) { .lang { margin-left: auto } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="prompt" href="#inicio"><b>sergio</b>@<i>homelab</i>:~$</a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#experiencia">experiencia</a>
+      <a href="#homelab">homelab</a>
+      <a href="#proyectos">proyectos</a>
+      <a href="#stack">stack</a>
+      <a href="#contacto">contacto</a>
+    </nav>
+    <div class="lang" aria-label="Idioma / Language"><a href="./" hreflang="es" aria-current="page">ES</a><a href="en/" hreflang="en">EN</a></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===================== HERO -->
+  <div class="hero" id="inicio">
+    <div>
+      <div class="cmd">whoami</div>
+      <h1>Sergio Varona<br><em>Madrid</em></h1>
+      <p class="role">Software Engineer · Back-End Developer</p>
+      <p class="lead">Ingeniero informático con <strong>más de 5 años</strong> desarrollando backend en <strong>Java y Spring</strong> para el módulo de ventas de <strong>Iberdrola</strong> en Accenture. En casa mantengo un <strong>homelab de dos Raspberry Pi</strong> con servicios propios en Python, cada uno con su app Android.</p>
+      <div class="cta">
+        <a class="btn pri" href="#proyectos">Ver proyectos</a>
+        <a class="btn" href="https://github.com/svaronam" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          GitHub
+        </a>
+        <a class="btn" href="https://linkedin.com/in/sergio-varona-madrid" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.83v1.5h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13v5.43h-4v-4.82c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.9h-4v-11Z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <div class="fetch" aria-label="Resumen en formato terminal">
+      <div class="bar"><i></i><i></i><i></i><span>neofetch</span></div>
+      <div class="body">
+        <div class="line"><span class="h">sergio</span>@<span class="h">homelab</span></div>
+        <div class="line hr">----------------------------</div>
+        <div class="line"><span class="k">Rol</span><span class="v">Back-End Developer</span></div>
+        <div class="line"><span class="k">Empresa</span><span class="v">Accenture · Bilbao</span></div>
+        <div class="line"><span class="k">Cliente</span><span class="v">Iberdrola, módulo de ventas</span></div>
+        <div class="line"><span class="k">Stack</span><span class="v">Java · Spring Boot · SQL</span></div>
+        <div class="line"><span class="k">Exp.</span><span class="v">5+ años</span></div>
+        <div class="line"><span class="k">Formación</span><span class="v">Ing. Informática · UC</span></div>
+        <div class="line"><span class="k">Homelab</span><span class="v">2 × Raspberry Pi 3 B+</span></div>
+        <div class="line"><span class="k">Servicios</span><span class="v">7 en ejecución continua</span></div>
+        <div class="line"><span class="k">Red</span><span class="v">Tailscale (VPN)</span></div>
+        <div class="line"><span class="k">Idiomas</span><span class="v">Español · Inglés B2</span></div>
+        <div class="dots" aria-hidden="true">
+          <i style="background:#F2557F"></i><i style="background:#E9B04F"></i><i style="background:#4CC38A"></i><i style="background:#5AA9F0"></i><i style="background:#A98BF0"></i><i style="background:#8B95A6"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== EXPERIENCIA -->
+  <section id="experiencia">
+    <div class="cmd">cat <span>experiencia.log</span></div>
+    <h2 class="sec-title">Experiencia</h2>
+    <div class="timeline">
+      <article class="job">
+        <span class="when">dic 2023 — actualidad · Bilbao</span>
+        <h3>Back-End Developer <small>· Accenture</small></h3>
+        <ul>
+          <li>Desarrollo de <b>microservicios y APIs REST</b> para el modelo de ventas de Iberdrola con <b>Spring Boot</b>, Spring Web, <b>Hibernate y JPA</b> sobre bases de datos SQL.</li>
+          <li>Procesos <b>Batch</b> con Spring Boot y <b>Spring Batch</b> para tratar grandes volúmenes de datos.</li>
+          <li>Pruebas unitarias con <b>JUnit y Mockito</b>, y calidad de código con Git, Sonar y Jenkins.</li>
+          <li>Trabajo en equipo <b>Scrum</b> con sprints de 4 semanas.</li>
+        </ul>
+      </article>
+      <article class="job prev">
+        <span class="when">feb 2022 — dic 2023 · Bilbao</span>
+        <h3>Associate Back-End Developer <small>· Accenture</small></h3>
+        <ul>
+          <li>Diseñé la infraestructura de procesos Batch con <b>Spring Batch</b> en el módulo de ventas, sustituyendo <b>Cobol por Java</b>, con una <b>reducción sustancial de costes</b> para el cliente.</li>
+          <li>Desarrollo y mantenimiento de funcionalidades con Java, Spring y Spring Batch.</li>
+        </ul>
+      </article>
+      <article class="job prev">
+        <span class="when">ene 2021 — feb 2022 · Remoto</span>
+        <h3>Prácticas <small>· Customerworks Europe</small></h3>
+        <ul>
+          <li>Mantenimiento de la base de datos del modelo de ventas de Iberdrola, garantizando la integridad de los datos, y desarrollo de funcionalidades en <b>Java</b>.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="edu">
+      <div class="panel">
+        <span class="lbl">Formación</span>
+        <h3>Grado en Ingeniería Informática</h3>
+        <div class="row"><span>Universidad de Cantabria · mención Ingeniería de Software</span><span class="mono">2017 — 2021</span></div>
+        <p>Trabajo de fin de grado: web con <b style="color:var(--fg);font-weight:600">React y Spring Boot</b> para agilizar la contratación entre perfiles IT y empresas (nota 8,2).</p>
+      </div>
+      <div class="panel">
+        <span class="lbl">Certificaciones</span>
+        <div class="row"><b>AWS Certified Cloud Practitioner</b><span class="mono">feb 2022</span></div>
+        <div class="row"><span>Amazon Web Services</span></div>
+        <div class="row" style="margin-top:6px"><b>AWS Cloud Technical Essentials</b><span class="mono">mar 2022</span></div>
+        <div class="row"><span>Coursera</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOMELAB -->
+  <section id="homelab">
+    <div class="cmd">systemctl list-units <span>--type=service</span></div>
+    <h2 class="sec-title">El homelab</h2>
+    <div class="lab">
+      <div>
+        <p>Dos <strong>Raspberry Pi 3 B+</strong> en un rack con switch gigabit, con Raspberry Pi OS Lite. Cada servicio es un proceso de <strong>systemd</strong> escrito en Python, con su propio panel web y una <strong>app Android nativa</strong> que recibe avisos.</p>
+        <p>Nada se expone a internet: todo el acceso va por <strong>VPN con Tailscale</strong> y autenticación por token. Las APK se compilan en <strong>GitHub Actions</strong> en cada push, y Pi Monitor vigila que todo siga en marcha.</p>
+      </div>
+      <div class="units" role="region" aria-label="Servicios del homelab" tabindex="0">
+        <table>
+          <thead><tr><th>UNIT</th><th>HOST</th><th>ESTADO</th><th>QUÉ HACE</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#p-pimonitor">pi-agent.service</a></td><td>ambas</td><td class="on">running</td><td>monitorización y control</td></tr>
+            <tr><td><a href="#p-wallabot">wallabot.service</a></td><td>homelab1</td><td class="on">running</td><td>alertas y mercado de Wallapop</td></tr>
+            <tr><td><a href="#p-wallapop">wallapop.service</a></td><td>homelab1</td><td class="on">running</td><td>gestión de anuncios propios</td></tr>
+            <tr><td><a href="#p-opotest">opotest.service</a></td><td>homelab2</td><td class="on">running</td><td>tests con repaso e IA</td></tr>
+            <tr><td><a href="#p-oporadar">oporadar.service</a></td><td>homelab2</td><td class="on">running</td><td>radar de boletines oficiales</td></tr>
+            <tr><td><a href="#p-diecast">diecast-radar.service</a></td><td>homelab2</td><td class="on">running</td><td>lanzamientos de coleccionismo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROYECTOS -->
+  <section id="proyectos" style="padding-top:24px">
+    <div class="cmd">systemctl status <span>homelab-*</span></div>
+    <h2 class="sec-title">Proyectos</h2>
+
+    <div class="projects">
+
+      <article class="proj" id="p-pimonitor">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/pimonitor-inicio.webp" alt="Inicio de Pi Monitor con el estado de las dos Raspberry Pi y sus servicios" loading="lazy"><span class="zoom">ampliar</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="img/pimonitor-inicio.webp" data-cap="Inicio: las dos Pi y sus servicios" aria-label="Inicio"><img src="img/pimonitor-inicio.webp" alt=""></button>
+            <button type="button" data-src="img/pimonitor-pi.webp" data-cap="Detalle de una Pi: gráficas de 24 h y uso de la SD" aria-label="Detalle de una Pi"><img src="img/pimonitor-pi.webp" alt=""></button>
+            <button type="button" data-src="img/pimonitor-bot.webp" data-cap="Detalle de un servicio: control, horario y vigilancia" aria-label="Detalle de un servicio"><img src="img/pimonitor-bot.webp" alt=""></button>
+          </div>
+          <p class="cap">Inicio: las dos Pi y sus servicios</p>
+        </div>
+        <div class="info">
+          <div class="unit">● pi-monitor.service <span class="st">active (running)</span></div>
+          <h3>Pi Monitor</h3>
+          <p class="desc">Monitorización y control de las Raspberry Pi desde el móvil. Un agente ligero en cada Pi expone su estado y el de sus servicios, y una app Android lo junta todo y avisa cuando algo falla.</p>
+          <ul>
+            <li>Métricas de <b>CPU, temperatura, RAM, SD y voltaje</b>, con gráficas de 24 horas y 7 días.</li>
+            <li>Detecta servicios <b>caídos o colgados</b> y los reinicia solo, con un límite de intentos diario.</li>
+            <li>Distingue entre “la Pi no responde” y “el móvil no tiene VPN” para <b>no dar falsas alarmas</b>.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python stdlib</span><span class="chip">systemd</span><span class="chip">Kotlin</span><span class="chip">Tailscale</span><span class="chip">GitHub Actions</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/pi-monitor" target="_blank" rel="noopener">Ver repositorio →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-wallabot">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/wallabot-analisis.webp" alt="Análisis de mercado de Wallabot con ventas, tiempo hasta vender y conclusiones" loading="lazy"><span class="zoom">ampliar</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="img/wallabot-analisis.webp" data-cap="Análisis de mercado con conclusiones automáticas" aria-label="Análisis de mercado"><img src="img/wallabot-analisis.webp" alt=""></button>
+            <button type="button" data-src="img/wallabot-avisos.webp" data-cap="Chollos frente a la mediana de la búsqueda" aria-label="Chollos"><img src="img/wallabot-avisos.webp" alt=""></button>
+            <button type="button" data-src="img/wallabot-busquedas.webp" data-cap="Búsquedas con avisos" aria-label="Búsquedas"><img src="img/wallabot-busquedas.webp" alt=""></button>
+          </div>
+          <p class="cap">Análisis de mercado con conclusiones automáticas</p>
+        </div>
+        <div class="info">
+          <div class="unit">● wallabot.service <span class="st">active (running)</span></div>
+          <h3>Wallabot</h3>
+          <p class="desc">Rastreador de Wallapop 24/7 con avisos en tiempo real y análisis de mercado. Sigue búsquedas, detecta chollos, bajadas de precio y ventas, y notifica a una app Android propia sin servicios de terceros.</p>
+          <ul>
+            <li><b>Chollos</b> calculados frente a la mediana de cada búsqueda, con señales de prisa del vendedor y de riesgo.</li>
+            <li>Guarda cada anuncio y revisa su ficha para medir <b>qué se vende, en cuánto tiempo y a qué precio real</b>.</li>
+            <li>Eventos en tiempo real por <b>long-polling</b> y canales de aviso separados en Android.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python asyncio</span><span class="chip">Starlette</span><span class="chip">httpx</span><span class="chip">SQLite</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/wallabot" target="_blank" rel="noopener">Ver repositorio →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-opotest">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/opotest-pregunta.webp" alt="Pregunta corregida en OpoTest con explicación y fuentes" loading="lazy"><span class="zoom">ampliar</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="img/opotest-pregunta.webp" data-cap="Pregunta corregida con explicación y fuentes" aria-label="Pregunta corregida"><img src="img/opotest-pregunta.webp" alt=""></button>
+            <button type="button" data-src="img/opotest-hoy.webp" data-cap="Objetivo diario y accesos rápidos" aria-label="Hoy"><img src="img/opotest-hoy.webp" alt=""></button>
+            <button type="button" data-src="img/opotest-test.webp" data-cap="Nuevo test y generación con IA" aria-label="Nuevo test"><img src="img/opotest-test.webp" alt=""></button>
+            <button type="button" data-src="img/opotest-repaso.webp" data-cap="Repaso espaciado de las falladas" aria-label="Repaso"><img src="img/opotest-repaso.webp" alt=""></button>
+          </div>
+          <p class="cap">Pregunta corregida con explicación y fuentes</p>
+        </div>
+        <div class="info">
+          <div class="unit">● opotest.service <span class="st">active (running)</span></div>
+          <h3>OpoTest TIC</h3>
+          <p class="desc">Plataforma de tests de aprendizaje continuo para las oposiciones TIC de la Administración (A1, A2 y C1). Combina un banco de preguntas, el temario indexado y preguntas generadas con IA.</p>
+          <ul>
+            <li><b>Repaso espaciado</b>: cada fallada vuelve a los 1, 3, 7, 15 y 30 días.</li>
+            <li>Preguntas nuevas con <b>Gemini</b>, centradas en los temas que peor llevas. Un segundo modelo las resuelve a ciegas y <b>descarta las ambiguas</b>.</li>
+            <li>Temario en PDF indexado y buscable, con <b>OCR</b> para los documentos escaneados.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Starlette</span><span class="chip">SQLite</span><span class="chip">Gemini API</span><span class="chip">Tesseract</span><span class="chip">Android</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/opotest" target="_blank" rel="noopener">Ver repositorio →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-oporadar">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/oporadar-radar.webp" alt="Radar de OpoRadar con convocatorias de informática puntuadas" loading="lazy"><span class="zoom">ampliar</span></button>
+          <p class="cap">Convocatorias TIC puntuadas de 0 a 100</p>
+        </div>
+        <div class="info">
+          <div class="unit">● oporadar.service <span class="st">active (running)</span></div>
+          <h3>OpoRadar</h3>
+          <p class="desc">Radar diario de oposiciones de informática. Lee cada mañana el BOE y varios boletines autonómicos, filtra solo las plazas TIC, las puntúa según su interés y avisa a una app Android propia.</p>
+          <ul>
+            <li>Lee <b>5 boletines</b>: BOE (API oficial), BOC, BOPA, BOCYL y BOPV.</li>
+            <li>Clasifica grupo, sistema de acceso y tipo de anuncio, y <b>puntúa de 0 a 100</b> explicando de dónde sale cada punto.</li>
+            <li><b>Se autovigila</b>: si un boletín cambia su web o deja de dar resultados, lanza una alerta de estado.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python stdlib</span><span class="chip">SQLite</span><span class="chip">XML</span><span class="chip">unittest</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/oporadar" target="_blank" rel="noopener">Ver repositorio →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-diecast">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/diecast-tiendas.webp" alt="Diecast Radar con modelos anunciados y en stock de webs oficiales" loading="lazy"><span class="zoom">ampliar</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="img/diecast-tiendas.webp" data-cap="Webs oficiales de fabricantes" aria-label="Webs oficiales"><img src="img/diecast-tiendas.webp" alt=""></button>
+            <button type="button" data-src="img/diecast-overnight.webp" data-cap="Catálogo de una tienda española" aria-label="Tienda española"><img src="img/diecast-overnight.webp" alt=""></button>
+            <button type="button" data-src="img/diecast-hotwheels.webp" data-cap="Preorders detectados" aria-label="Preorders"><img src="img/diecast-hotwheels.webp" alt=""></button>
+          </div>
+          <p class="cap">Webs oficiales de fabricantes</p>
+        </div>
+        <div class="info">
+          <div class="unit">● diecast-radar.service <span class="st">active (running)</span></div>
+          <h3>Diecast Radar</h3>
+          <p class="desc">Vigila lanzamientos y preorders de coches de colección a escala 1:64 en webs de fabricantes y tiendas españolas, y avisa al móvil en segundos.</p>
+          <ul>
+            <li>Detecta la plataforma de cada web (<b>Shopify, WooCommerce, PrestaShop</b> o propia) y lee su catálogo sin navegador.</li>
+            <li>Avisa de <b>modelo nuevo, preorder abierto y vuelta a stock</b>; la primera pasada solo guarda, para no avisar de lo que ya había.</li>
+            <li>Lee posts e historias de Instagram y clasifica los anuncios con <b>OCR</b> sobre la imagen.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Flask</span><span class="chip">BeautifulSoup</span><span class="chip">curl_cffi</span><span class="chip">Tesseract</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/diecast-radar" target="_blank" rel="noopener">Ver repositorio →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-wallapop">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/wallapop-rutinas.webp" alt="Rutinas programadas de Wallapop Control" loading="lazy"><span class="zoom">ampliar</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="img/wallapop-rutinas.webp" data-cap="Rutinas programadas por días y hora" aria-label="Rutinas"><img src="img/wallapop-rutinas.webp" alt=""></button>
+            <button type="button" data-src="img/wallapop-posicion.webp" data-cap="Posición de cada anuncio en las búsquedas" aria-label="Posición"><img src="img/wallapop-posicion.webp" alt=""></button>
+            <button type="button" data-src="img/wallapop-republicar.webp" data-cap="Republicar en lote" aria-label="Republicar"><img src="img/wallapop-republicar.webp" alt=""></button>
+            <button type="button" data-src="img/wallapop-ordenar.webp" data-cap="Ordenar el perfil arrastrando" aria-label="Ordenar"><img src="img/wallapop-ordenar.webp" alt=""></button>
+            <button type="button" data-src="img/wallapop-publicar.webp" data-cap="Publicar en Wallapop y eBay a la vez" aria-label="Publicar"><img src="img/wallapop-publicar.webp" alt=""></button>
+          </div>
+          <p class="cap">Rutinas programadas por días y hora</p>
+        </div>
+        <div class="info">
+          <div class="unit">● wallapop.service <span class="st">active (running)</span><span class="st priv">repositorio privado</span></div>
+          <h3>Wallapop Control</h3>
+          <p class="desc">Gestión de los anuncios propios de Wallapop desde el móvil. Empezó como extensión de Chrome y evolucionó a un servidor que funciona solo, sin navegador abierto, y publica también en eBay.</p>
+          <ul>
+            <li>Republicación en lote y <b>rutinas programadas</b> con variación aleatoria y modo simulacro.</li>
+            <li>Mide la <b>posición de cada anuncio</b> en las búsquedas y ordena el perfil subiendo solo el mínimo de anuncios necesario.</li>
+            <li>Publica a la vez en Wallapop y <b>eBay</b> (OAuth2 y Trading API).</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">Flask</span><span class="chip">curl_cffi</span><span class="chip">eBay API</span><span class="chip">Kotlin</span></div>
+          <div class="links"><span class="note">Código privado · disponible bajo petición</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== STACK -->
+  <section id="stack">
+    <div class="cmd">cat <span>stack.txt</span></div>
+    <h2 class="sec-title">Tecnologías</h2>
+    <div class="stack">
+      <div class="panel"><span class="lbl">Lenguajes</span><ul><li class="chip">Java</li><li class="chip">Python</li><li class="chip">SQL</li><li class="chip">Kotlin</li><li class="chip">JavaScript</li></ul></div>
+      <div class="panel"><span class="lbl">Backend</span><ul><li class="chip">Spring Boot</li><li class="chip">Spring Batch</li><li class="chip">Spring Web</li><li class="chip">Hibernate / JPA</li><li class="chip">APIs REST</li><li class="chip">Microservicios</li><li class="chip">Maven</li></ul></div>
+      <div class="panel"><span class="lbl">Bases de datos</span><ul><li class="chip">Oracle</li><li class="chip">PostgreSQL</li><li class="chip">MySQL</li><li class="chip">IBM DB2</li><li class="chip">SQLite</li></ul></div>
+      <div class="panel"><span class="lbl">Testing y calidad</span><ul><li class="chip">JUnit</li><li class="chip">Mockito</li><li class="chip">Sonar</li><li class="chip">unittest</li></ul></div>
+      <div class="panel"><span class="lbl">DevOps y cloud</span><ul><li class="chip">Git</li><li class="chip">Jenkins</li><li class="chip">GitHub Actions</li><li class="chip">Docker</li><li class="chip">Linux</li><li class="chip">systemd</li><li class="chip">AWS</li></ul></div>
+      <div class="panel"><span class="lbl">Arquitectura y método</span><ul><li class="chip">Hexagonal</li><li class="chip">DDD</li><li class="chip">MVC</li><li class="chip">Agile / Scrum</li><li class="chip">Desarrollo asistido por IA</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACTO -->
+  <section id="contacto">
+    <div class="cmd">contact <span>--info</span></div>
+    <div class="contact">
+      <div>
+        <h2>Hablemos</h2>
+        <p>Busco seguir creciendo como desarrollador backend. Si tienes una oferta o quieres saber más de algún proyecto, escríbeme.</p>
+      </div>
+      <div class="clist">
+        <div class="citem"><span class="k">email</span><span class="v" id="mail">svaronamadrid@outlook.com</span><button class="copy" type="button" id="copyMail">Copiar</button></div>
+        <a class="citem" href="https://linkedin.com/in/sergio-varona-madrid" target="_blank" rel="noopener"><span class="k">linkedin</span><span class="v">in/sergio-varona-madrid</span></a>
+        <a class="citem" href="https://github.com/svaronam" target="_blank" rel="noopener"><span class="k">github</span><span class="v">github.com/svaronam</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Sergio Varona Madrid</span>
+    <span>servicios en Raspberry Pi · acceso por Tailscale</span>
+  </footer>
+</main>
+
+<dialog class="lb" id="lb" aria-label="Captura ampliada">
+  <div class="in">
+    <div class="hd"><span id="lbCap"></span><button type="button" id="lbClose" aria-label="Cerrar">Cerrar ✕</button></div>
+    <div class="stage"><img id="lbImg" alt=""></div>
+    <div class="ft"><button type="button" id="lbPrev" aria-label="Anterior">← Anterior</button><button type="button" id="lbNext" aria-label="Siguiente">Siguiente →</button></div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg'), lbCap = document.getElementById('lbCap');
+  let cur = null, idx = 0;
+  const items = g => {
+    const t = [...g.querySelectorAll('.thumbs button')];
+    if (t.length) return t.map(b => ({ src: b.dataset.src, cap: b.dataset.cap }));
+    const img = g.querySelector('.shot img');
+    return [{ src: img.getAttribute('src'), cap: g.querySelector('.cap')?.textContent || '' }];
+  };
+  const show = () => {
+    const list = items(cur), it = list[idx];
+    lbImg.src = it.src; lbImg.alt = it.cap; lbCap.textContent = `${it.cap} · ${idx + 1}/${list.length}`;
+    const one = list.length < 2;
+    document.getElementById('lbPrev').hidden = one; document.getElementById('lbNext').hidden = one;
+  };
+  const select = (g, i) => {
+    const t = [...g.querySelectorAll('.thumbs button')]; if (!t.length) return;
+    t.forEach((b, j) => b.setAttribute('aria-current', j === i ? 'true' : 'false'));
+    const img = g.querySelector('.shot img');
+    img.src = t[i].dataset.src; img.alt = t[i].dataset.cap;
+    g.querySelector('.cap').textContent = t[i].dataset.cap;
+    g.dataset.idx = i;
+  };
+  document.querySelectorAll('[data-gal]').forEach(g => {
+    g.dataset.idx = 0;
+    g.querySelectorAll('.thumbs button').forEach((b, i) => b.addEventListener('click', () => select(g, i)));
+    g.querySelector('.shot').addEventListener('click', () => {
+      cur = g; idx = +g.dataset.idx || 0; show();
+      try { lb.showModal() } catch { lb.setAttribute('open', '') }
+    });
+  });
+  const step = d => { const n = items(cur).length; idx = (idx + d + n) % n; show(); select(cur, idx) };
+  document.getElementById('lbPrev').addEventListener('click', () => step(-1));
+  document.getElementById('lbNext').addEventListener('click', () => step(1));
+  document.getElementById('lbClose').addEventListener('click', () => lb.close());
+  lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('stage')) lb.close() });
+  lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1) });
+
+  const btn = document.getElementById('copyMail'), mail = document.getElementById('mail');
+  btn.addEventListener('click', () => {
+    const done = () => { btn.textContent = 'Copiado'; setTimeout(() => btn.textContent = 'Copiar', 1600) };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(mail); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Seleccionado' ; setTimeout(() => btn.textContent = 'Copiar', 1600) };
+    try { navigator.clipboard.writeText(mail.textContent.trim()).then(done, fallback) } catch { fallback() }
+  });
+})();
+</script>
+
+</body>
+</html>
