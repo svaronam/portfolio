@@ -330,7 +330,7 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
         <div class="line"><span class="k">Exp.</span><span class="v">5+ years</span></div>
         <div class="line"><span class="k">Education</span><span class="v">BSc Comp. Eng. · UC</span></div>
         <div class="line"><span class="k">Homelab</span><span class="v">2 × Raspberry Pi 3 B+</span></div>
-        <div class="line"><span class="k">Services</span><span class="v">7 always-on</span></div>
+        <div class="line"><span class="k">Services</span><span class="v">8 always-on</span></div>
         <div class="line"><span class="k">Network</span><span class="v">Tailscale (VPN)</span></div>
         <div class="line"><span class="k">Languages</span><span class="v">Spanish · English B2</span></div>
         <div class="dots" role="group" aria-label="Accent color"><button type="button" data-accent="raspberry" style="background:#F2557F" aria-label="Raspberry color" aria-pressed="true"></button><button type="button" data-accent="amber" style="background:#E9B04F" aria-label="Amber color" aria-pressed="false"></button><button type="button" data-accent="green" style="background:#4CC38A" aria-label="Green color" aria-pressed="false"></button><button type="button" data-accent="blue" style="background:#5AA9F0" aria-label="Blue color" aria-pressed="false"></button><button type="button" data-accent="violet" style="background:#A98BF0" aria-label="Violet color" aria-pressed="false"></button><button type="button" data-accent="slate" style="background:#A3ADBD" aria-label="Slate color" aria-pressed="false"></button></div>
@@ -403,6 +403,7 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
             <tr><td><a href="#p-pimonitor">pi-agent.service</a></td><td>both</td><td class="on">running</td><td>monitoring and control</td></tr>
             <tr><td><a href="#p-wallabot">wallabot.service</a></td><td>homelab1</td><td class="on">running</td><td>Wallapop alerts and market data</td></tr>
             <tr><td><a href="#p-wallapop">wallapop.service</a></td><td>homelab1</td><td class="on">running</td><td>managing my own listings</td></tr>
+            <tr><td><a href="#p-jobradar">jobradar.service</a></td><td>homelab1</td><td class="on">running</td><td>job offers and tailored CVs</td></tr>
             <tr><td><a href="#p-opotest">opotest.service</a></td><td>homelab2</td><td class="on">running</td><td>quizzes with spaced repetition and AI</td></tr>
             <tr><td><a href="#p-oporadar">oporadar.service</a></td><td>homelab2</td><td class="on">running</td><td>official gazette radar</td></tr>
             <tr><td><a href="#p-diecast">diecast-radar.service</a></td><td>homelab2</td><td class="on">running</td><td>collectible release alerts</td></tr>
@@ -418,6 +419,30 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
     <h2 class="sec-title">Projects</h2>
 
     <div class="projects">
+
+      <article class="proj" id="p-jobradar">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Enlarge screenshot"><img src="../img/jobradar-ofertas.webp" alt="LinkedIn job offers scored from 0 to 100 with a breakdown of every point" loading="lazy"><span class="zoom">enlarge</span></button>
+          <div class="thumbs">
+            <button type="button" aria-current="true" data-src="../img/jobradar-ofertas.webp" data-cap="Scored offers with a breakdown of every point" aria-label="Offers"><img src="../img/jobradar-ofertas.webp" alt=""></button>
+            <button type="button" data-src="../img/jobradar-requisitos.webp" data-cap="Job requirements vs. the tailored CV" aria-label="Requirements"><img src="../img/jobradar-requisitos.webp" alt=""></button>
+            <button type="button" data-src="../img/jobradar-baremo.webp" data-cap="Scoring rules editable from the app" aria-label="Scoring"><img src="../img/jobradar-baremo.webp" alt=""></button>
+          </div>
+          <p class="cap">Scored offers with a breakdown of every point</p>
+        </div>
+        <div class="info">
+          <div class="unit">● jobradar.service <span class="st">active (running)</span></div>
+          <h3>JobRadar</h3>
+          <p class="desc">A LinkedIn job radar tailored to me. It looks for development and analyst roles, scores them against my priorities, generates a CV tailored to each offer and notifies its own Android app.</p>
+          <ul>
+            <li>Scores 0 to 100 by <b>work mode, distance, role, experience, salary and stack</b>, with scoring rules editable from the app that rescore everything stored.</li>
+            <li><b>CV tailored with Gemini</b> as a one-page PDF. A <b>deterministic guard</b> rejects any sentence naming technologies, figures or titles that are not in the original CV.</li>
+            <li>Infers the real work mode from the text (the “remote” job that wants you in the office), drops LinkedIn's filler results and <b>monitors itself</b> if the site changes or rate-limits.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">BeautifulSoup</span><span class="chip">Gemini API</span><span class="chip">ReportLab</span><span class="chip">SQLite</span><span class="chip">Kotlin</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/Jobradar" target="_blank" rel="noopener">View repository →</a></div>
+        </div>
+      </article>
 
       <article class="proj" id="p-pimonitor">
         <div class="gal" data-gal>
