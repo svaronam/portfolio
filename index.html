@@ -38,6 +38,7 @@ img { max-width: 100% }
   --mut: #8B95A6;
   --accent: #F2557F;
   --accent-soft: rgba(242, 85, 127, .14);
+  --on-accent: #0F1218;
   --ok: #4CC38A;
   --ok-soft: rgba(76, 195, 138, .14);
   --warn: #E9B04F;
@@ -50,14 +51,14 @@ img { max-width: 100% }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
     --bg: #F3F5F8; --bg-2: #EBEEF3; --surface: #FFFFFF; --line: #DBE0E7; --line-2: #C6CDD8;
-    --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09);
+    --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09); --on-accent: #FFFFFF;
     --ok: #18804F; --ok-soft: rgba(24, 128, 79, .1); --warn: #9A6400; --shadow: 0 18px 40px -28px rgba(20, 30, 50, .35);
     color-scheme: light;
   }
 }
 :root[data-theme="light"] {
   --bg: #F3F5F8; --bg-2: #EBEEF3; --surface: #FFFFFF; --line: #DBE0E7; --line-2: #C6CDD8;
-  --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09);
+  --fg: #121722; --fg-2: #39414F; --mut: #5E6878; --accent: #B8164B; --accent-soft: rgba(184, 22, 75, .09); --on-accent: #FFFFFF;
   --ok: #18804F; --ok-soft: rgba(24, 128, 79, .1); --warn: #9A6400; --shadow: 0 18px 40px -28px rgba(20, 30, 50, .35);
   color-scheme: light;
 }
@@ -118,7 +119,7 @@ section { padding-block: 72px 8px }
   font: 500 14px var(--mono); text-decoration: none; cursor: pointer;
 }
 .btn:hover { border-color: var(--fg-2) }
-.btn.pri { background: var(--accent); border-color: var(--accent); color: #fff }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: var(--on-accent) }
 .btn.pri:hover { filter: brightness(1.08) }
 .btn svg { flex: none }
 
@@ -135,8 +136,32 @@ section { padding-block: 72px 8px }
 .fetch .v { color: var(--fg) }
 .fetch .h { color: var(--fg); font-weight: 600 }
 .fetch .hr { color: var(--line-2) }
-.fetch .dots { display: flex; gap: 6px; margin-top: 10px }
-.fetch .dots i { width: 22px; height: 12px; border-radius: 2px }
+/* color de acento elegido en los cuadritos del neofetch */
+:root[data-accent="raspberry"] { --accent: #F2557F; --accent-soft: rgba(242, 85, 127, 0.14) }
+:root[data-accent="amber"] { --accent: #E9B04F; --accent-soft: rgba(233, 176, 79, 0.14) }
+:root[data-accent="green"] { --accent: #4CC38A; --accent-soft: rgba(76, 195, 138, 0.14) }
+:root[data-accent="blue"] { --accent: #5AA9F0; --accent-soft: rgba(90, 169, 240, 0.14) }
+:root[data-accent="violet"] { --accent: #A98BF0; --accent-soft: rgba(169, 139, 240, 0.14) }
+:root[data-accent="slate"] { --accent: #A3ADBD; --accent-soft: rgba(163, 173, 189, 0.14) }
+@media (prefers-color-scheme: light) {
+  :root[data-accent="raspberry"]:not([data-theme="dark"]) { --accent: #B8164B; --accent-soft: rgba(184, 22, 75, 0.09) }
+  :root[data-accent="amber"]:not([data-theme="dark"]) { --accent: #9A6400; --accent-soft: rgba(154, 100, 0, 0.09) }
+  :root[data-accent="green"]:not([data-theme="dark"]) { --accent: #18804F; --accent-soft: rgba(24, 128, 79, 0.09) }
+  :root[data-accent="blue"]:not([data-theme="dark"]) { --accent: #1F64B5; --accent-soft: rgba(31, 100, 181, 0.09) }
+  :root[data-accent="violet"]:not([data-theme="dark"]) { --accent: #6A42C9; --accent-soft: rgba(106, 66, 201, 0.09) }
+  :root[data-accent="slate"]:not([data-theme="dark"]) { --accent: #4E5868; --accent-soft: rgba(78, 88, 104, 0.09) }
+}
+:root[data-accent="raspberry"][data-theme="light"] { --accent: #B8164B; --accent-soft: rgba(184, 22, 75, 0.09) }
+:root[data-accent="amber"][data-theme="light"] { --accent: #9A6400; --accent-soft: rgba(154, 100, 0, 0.09) }
+:root[data-accent="green"][data-theme="light"] { --accent: #18804F; --accent-soft: rgba(24, 128, 79, 0.09) }
+:root[data-accent="blue"][data-theme="light"] { --accent: #1F64B5; --accent-soft: rgba(31, 100, 181, 0.09) }
+:root[data-accent="violet"][data-theme="light"] { --accent: #6A42C9; --accent-soft: rgba(106, 66, 201, 0.09) }
+:root[data-accent="slate"][data-theme="light"] { --accent: #4E5868; --accent-soft: rgba(78, 88, 104, 0.09) }
+.fetch .dots { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap }
+.fetch .dots button { width: 28px; height: 18px; border-radius: 3px; border: 0; padding: 0; cursor: pointer; position: relative; transition: transform .12s }
+.fetch .dots button:hover { transform: translateY(-2px) }
+.fetch .dots button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--fg) }
+.fetch .dots-hint { font-size: 11.5px; color: var(--mut); margin-top: 8px }
 
 /* ---------- experiencia */
 .timeline { display: grid; gap: 0; border-left: 1px solid var(--line-2); margin-left: 6px }
@@ -308,9 +333,8 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
         <div class="line"><span class="k">Servicios</span><span class="v">7 en ejecución continua</span></div>
         <div class="line"><span class="k">Red</span><span class="v">Tailscale (VPN)</span></div>
         <div class="line"><span class="k">Idiomas</span><span class="v">Español · Inglés B2</span></div>
-        <div class="dots" aria-hidden="true">
-          <i style="background:#F2557F"></i><i style="background:#E9B04F"></i><i style="background:#4CC38A"></i><i style="background:#5AA9F0"></i><i style="background:#A98BF0"></i><i style="background:#8B95A6"></i>
-        </div>
+        <div class="dots" role="group" aria-label="Color de acento"><button type="button" data-accent="raspberry" style="background:#F2557F" aria-label="Color frambuesa" aria-pressed="true"></button><button type="button" data-accent="amber" style="background:#E9B04F" aria-label="Color ámbar" aria-pressed="false"></button><button type="button" data-accent="green" style="background:#4CC38A" aria-label="Color verde" aria-pressed="false"></button><button type="button" data-accent="blue" style="background:#5AA9F0" aria-label="Color azul" aria-pressed="false"></button><button type="button" data-accent="violet" style="background:#A98BF0" aria-label="Color violeta" aria-pressed="false"></button><button type="button" data-accent="slate" style="background:#A3ADBD" aria-label="Color gris" aria-pressed="false"></button></div>
+        <div class="dots-hint">↑ elige el color de la web</div>
       </div>
     </div>
   </div>
@@ -623,6 +647,15 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
   document.getElementById('lbClose').addEventListener('click', () => lb.close());
   lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('stage')) lb.close() });
   lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1) });
+
+  const root = document.documentElement, sw = [...document.querySelectorAll('.dots button')];
+  const setAccent = k => {
+    if (k && k !== 'raspberry') root.dataset.accent = k; else delete root.dataset.accent;
+    sw.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.accent === (k || 'raspberry'))));
+  };
+  let saved = null; try { saved = localStorage.getItem('accent') } catch {}
+  if (saved && sw.some(b => b.dataset.accent === saved)) setAccent(saved);
+  sw.forEach(b => b.addEventListener('click', () => { setAccent(b.dataset.accent); try { localStorage.setItem('accent', b.dataset.accent) } catch {} }));
 
   const btn = document.getElementById('copyMail'), mail = document.getElementById('mail');
   btn.addEventListener('click', () => {
