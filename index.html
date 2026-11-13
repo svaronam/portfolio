@@ -330,7 +330,7 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
         <div class="line"><span class="k">Exp.</span><span class="v">5+ años</span></div>
         <div class="line"><span class="k">Formación</span><span class="v">Ing. Informática · UC</span></div>
         <div class="line"><span class="k">Homelab</span><span class="v">2 × Raspberry Pi 3 B+</span></div>
-        <div class="line"><span class="k">Servicios</span><span class="v">8 en ejecución continua</span></div>
+        <div class="line"><span class="k">Servicios</span><span class="v">9 en ejecución continua</span></div>
         <div class="line"><span class="k">Red</span><span class="v">Tailscale (VPN)</span></div>
         <div class="line"><span class="k">Idiomas</span><span class="v">Español · Inglés B2</span></div>
         <div class="dots" role="group" aria-label="Color de acento"><button type="button" data-accent="raspberry" style="background:#F2557F" aria-label="Color frambuesa" aria-pressed="true"></button><button type="button" data-accent="amber" style="background:#E9B04F" aria-label="Color ámbar" aria-pressed="false"></button><button type="button" data-accent="green" style="background:#4CC38A" aria-label="Color verde" aria-pressed="false"></button><button type="button" data-accent="blue" style="background:#5AA9F0" aria-label="Color azul" aria-pressed="false"></button><button type="button" data-accent="violet" style="background:#A98BF0" aria-label="Color violeta" aria-pressed="false"></button><button type="button" data-accent="slate" style="background:#A3ADBD" aria-label="Color gris" aria-pressed="false"></button></div>
@@ -406,6 +406,7 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
             <tr><td><a href="#p-jobradar">jobradar.service</a></td><td>homelab1</td><td class="on">running</td><td>ofertas de empleo y CV adaptado</td></tr>
             <tr><td><a href="#p-opotest">opotest.service</a></td><td>homelab2</td><td class="on">running</td><td>tests con repaso e IA</td></tr>
             <tr><td><a href="#p-oporadar">oporadar.service</a></td><td>homelab2</td><td class="on">running</td><td>radar de boletines oficiales</td></tr>
+            <tr><td><a href="#p-gsialerta">gsialerta.service</a></td><td>homelab2</td><td class="on">running</td><td>notas y puesto en la oposición</td></tr>
             <tr><td><a href="#p-diecast">diecast-radar.service</a></td><td>homelab2</td><td class="on">running</td><td>lanzamientos de coleccionismo</td></tr>
           </tbody>
         </table>
@@ -533,6 +534,25 @@ dialog.lb::backdrop { background: rgba(6, 8, 11, .95) }
           </ul>
           <div class="chips"><span class="chip">Python stdlib</span><span class="chip">SQLite</span><span class="chip">XML</span><span class="chip">unittest</span><span class="chip">Kotlin</span></div>
           <div class="links"><a class="btn" href="https://github.com/svaronam/oporadar" target="_blank" rel="noopener">Ver repositorio →</a></div>
+        </div>
+      </article>
+
+      <article class="proj" id="p-gsialerta">
+        <div class="gal" data-gal>
+          <button class="shot" type="button" aria-label="Ampliar captura"><img src="img/gsialerta-tests.webp" alt="Tests de GSI-ALERTA y el aviso con la nota final y el puesto" loading="lazy"><span class="zoom">ampliar</span></button>
+          <p class="cap">Tests del servidor y el aviso de resultado</p>
+        </div>
+        <div class="info">
+          <div class="unit">● gsialerta.service <span class="st">active (running)</span></div>
+          <h3>GSI-ALERTA</h3>
+          <p class="desc">Vigila cada minuto la sede del INAP y avisa en el móvil en cuanto salen las notas de la oposición GSI. Lee el PDF oficial, dice si estás en la lista de aprobados y calcula el puesto final aplicando las bases de la convocatoria.</p>
+          <ul>
+            <li>Detecta el listado en la web y <b>lee el PDF</b> del INAP fila a fila: nombre, DNI enmascarado y nota.</li>
+            <li>Calcula el <b>puesto final</b> con las reglas del BOE: suma de notas transformadas, desempates, cupo de discapacidad y plazas.</li>
+            <li>Nunca da un «no apareces» si el PDF no se ha leído bien. El aviso llega en segundos por <b>long-poll</b> y también a Pi Monitor.</li>
+          </ul>
+          <div class="chips"><span class="chip">Python</span><span class="chip">pdftotext</span><span class="chip">HTMLParser</span><span class="chip">systemd</span><span class="chip">Kotlin</span><span class="chip">GitHub Actions</span></div>
+          <div class="links"><a class="btn" href="https://github.com/svaronam/gsi-alerta" target="_blank" rel="noopener">Ver repositorio →</a></div>
         </div>
       </article>
 
